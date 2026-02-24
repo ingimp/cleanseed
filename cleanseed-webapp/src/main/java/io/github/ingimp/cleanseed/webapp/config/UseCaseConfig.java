@@ -12,18 +12,17 @@ import org.springframework.context.annotation.Configuration;
 public class UseCaseConfig {
 
     @Bean
-    public CreateSeedOrderUseCase createDummyOrderUseCase(SeedOrders orders, SeedUsers users) {
-        // Ora passiamo entrambi i collaboratori richiesti dal costruttore
+    public CreateSeedOrderUseCase createSeedOrderUseCase(SeedOrders orders, SeedUsers users) {
         return new CreateSeedOrderUseCase(orders, users);
     }
 
     @Bean
-    public GetSeedOrdersUseCase getDummyOrdersUseCase(SeedOrders orders) {
+    public GetSeedOrdersUseCase getSeedOrdersUseCase(SeedOrders orders) {
         return new GetSeedOrdersUseCase(orders);
     }
 
     @Bean
-    public SeedOrderOrchestrator dummyOrderOrchestrator(
+    public SeedOrderOrchestrator seedOrderOrchestrator(
             CreateSeedOrderUseCase createUseCase,
             GetSeedOrdersUseCase getUseCase) {
         return new SeedOrderOrchestrator(createUseCase, getUseCase);

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,7 +78,10 @@ public class JpaSeedOrderAdapter implements SeedOrders {
 
     @Override
     public List<SeedOrder> findRecent() {
-        return List.of();
+        LocalDateTime cutoff = LocalDateTime.now().minusHours(24);
+        return orderRepository.findAllByTimestampAfterOrderByTimestampDesc(cutoff).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
     }
 
 }
