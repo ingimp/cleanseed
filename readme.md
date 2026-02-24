@@ -75,6 +75,12 @@ Before the first commit, configure the environment for cross-platform collaborat
 mvn clean install
 ```
 
+### Release Gate
+```bash
+mvn -Prelease clean verify
+```
+Use this profile in CI release pipelines to enforce non-SNAPSHOT dependency constraints.
+
 ## 🚀 Running the Application
 
 Since this is a multi-module project, you must run the application from the **root** directory or specifically target the `webapp` module.

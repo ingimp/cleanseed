@@ -108,9 +108,6 @@
                                 <requireMavenVersion>
                                     <version>[3.8.6,)</version>
                                 </requireMavenVersion>
-                                <requireReleaseDeps>
-                                    <message>No SNAPSHOT dependencies are allowed.</message>
-                                </requireReleaseDeps>
                             </rules>
                         </configuration>
                     </execution>
@@ -118,5 +115,36 @@
             </plugin>
         </plugins>
     </build>
+
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-release-dependencies</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireReleaseDeps>
+                                            <message>No SNAPSHOT dependencies are allowed for release builds.</message>
+                                        </requireReleaseDeps>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
