@@ -1,0 +1,9 @@
+# Imposta il comportamento predefinito per i file di testo
+* text=auto
+
+# Forza gli script shell a usare LF (Unix)
+*.sh text eol=lf
+
+# Forza i file batch di Windows a usare CRLF
+*.cmd text eol=crlf
+*.bat text eol=crlf
