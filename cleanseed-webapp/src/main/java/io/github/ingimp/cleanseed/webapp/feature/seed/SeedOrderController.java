@@ -2,7 +2,8 @@ package io.github.ingimp.cleanseed.webapp.feature.seed;
 
 import io.github.ingimp.cleanseed.application.seed.SeedOrderOrchestrator;
 import io.github.ingimp.cleanseed.application.seed.GetSeedOrdersUseCase;
-import io.github.ingimp.cleanseed.domain.seed.SeedOrder;
+import io.github.ingimp.cleanseed.webapp.feature.seed.dto.CreateSeedOrderRequest;
+import io.github.ingimp.cleanseed.webapp.feature.seed.dto.SeedOrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,31 +14,37 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SeedOrderController {
 
-    private final SeedOrderOrchestrator orchestrator; // Orchestratore per azioni complesse
-    private final GetSeedOrdersUseCase getUseCase;    // Use case semplice per le letture
+    private final SeedOrderOrchestrator orchestrator;
+    private final GetSeedOrdersUseCase getUseCase;
 
     @PostMapping
-    public void create(@RequestParam String id,
-                       @RequestParam String description,
-                       @RequestParam double price,
-                       @RequestParam String userId) {
-        // Il controller chiama l'orchestratore
-        orchestrator.createOrderWithLog(id, description, price, userId);
+    public void create(@RequestBody CreateSeedOrderRequest request) {
+        orchestrator.createOrderWithLog(
+                request.id(),
+                request.description(),
+                request.price(),
+                request.userId()
+        );
     }
 
     @GetMapping
-    public List<SeedOrder> all() {
-        return getUseCase.executeAll();
+    public List<SeedOrderResponse> all() {
+        return getUseCase.executeAll().stream()
+                .map(SeedOrderResponse::from)
+                .toList();
     }
 
     @GetMapping("/recent")
-    public List<SeedOrder> recent() {
-        return getUseCase.executeRecent();
+    public List<SeedOrderResponse> recent() {
+        return getUseCase.executeRecent().stream()
+                .map(SeedOrderResponse::from)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public SeedOrder byId(@PathVariable String id) {
+    public SeedOrderResponse byId(@PathVariable String id) {
         return getUseCase.executeWithId(id)
+                .map(SeedOrderResponse::from)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
     }
 }
