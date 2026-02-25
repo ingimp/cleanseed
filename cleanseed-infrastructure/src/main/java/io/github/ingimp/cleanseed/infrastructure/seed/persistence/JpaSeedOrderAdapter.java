@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-@Primary // Questo assicura che Spring scelga questa versione invece di quella In-Memory
+@Primary
 @RequiredArgsConstructor
 public class JpaSeedOrderAdapter implements SeedOrders {
 
@@ -27,7 +27,6 @@ public class JpaSeedOrderAdapter implements SeedOrders {
 
     @Override
     public void add(SeedOrder order) {
-        // Recuperiamo il riferimento all'utente (L'utente deve esistere nel DB)
         SeedUserJpaEntity userEntity = userRepository.findById(order.getOwner().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -43,20 +42,17 @@ public class JpaSeedOrderAdapter implements SeedOrders {
 
     @Override
     public List<SeedOrder> all() {
-        // Usiamo la versione ordinata anche qui come definito nel repository
         return orderRepository.findAllByOrderByTimestampDesc().stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
 
     private SeedOrder toDomain(SeedOrderJpaEntity entity) {
-        // 1. Mappiamo l'owner (JPA -> Dominio)
         SeedUser domainUser = new SeedUser(
                 entity.getOwner().getId(),
                 entity.getOwner().getUsername()
         );
 
-        // 2. Usiamo il metodo RESTORE per ricostituire il dominio dal DB
         return SeedOrder.restore(
                 entity.getId(),
                 entity.getDescription(),
@@ -77,8 +73,7 @@ public class JpaSeedOrderAdapter implements SeedOrders {
     }
 
     @Override
-    public List<SeedOrder> findRecent() {
-        LocalDateTime cutoff = LocalDateTime.now().minusHours(24);
+    public List<SeedOrder> findAfter(LocalDateTime cutoff) {
         return orderRepository.findAllByTimestampAfterOrderByTimestampDesc(cutoff).stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());

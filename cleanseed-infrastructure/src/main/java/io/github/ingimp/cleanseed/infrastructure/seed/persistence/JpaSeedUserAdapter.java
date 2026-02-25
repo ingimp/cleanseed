@@ -3,12 +3,13 @@ package io.github.ingimp.cleanseed.infrastructure.seed.persistence;
 import io.github.ingimp.cleanseed.domain.seed.SeedUser;
 import io.github.ingimp.cleanseed.domain.seed.SeedUsers;
 import io.github.ingimp.cleanseed.infrastructure.seed.persistence.jpa.JpaSeedUserRepository;
+import io.github.ingimp.cleanseed.infrastructure.seed.persistence.jpa.SeedUserJpaEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository // FONDAMENTALE: permette a Spring di trovarlo come Bean
+@Repository
 @RequiredArgsConstructor
 public class JpaSeedUserAdapter implements SeedUsers {
 
@@ -22,6 +23,9 @@ public class JpaSeedUserAdapter implements SeedUsers {
 
     @Override
     public void add(SeedUser user) {
-        // Implementazione opzionale se vuoi salvare utenti dal dominio
+        SeedUserJpaEntity entity = new SeedUserJpaEntity();
+        entity.setId(user.getId());
+        entity.setUsername(user.getUsername());
+        userRepository.save(entity);
     }
 }

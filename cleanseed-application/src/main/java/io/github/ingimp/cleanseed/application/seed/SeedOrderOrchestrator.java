@@ -1,21 +1,25 @@
 package io.github.ingimp.cleanseed.application.seed;
 
 import lombok.RequiredArgsConstructor;
+
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 public class SeedOrderOrchestrator {
+
 
     private final CreateSeedOrderUseCase createUseCase;
     private final GetSeedOrdersUseCase getUseCase;
 
     @Transactional
     public void createOrderWithLog(String id, String description, double price, String userId) {
-        // 1. Delega la creazione effettiva allo Use Case specifico
         createUseCase.execute(id, description, price, userId);
 
-        // 2. Esegue logica di coordinamento (es: contare gli ordini totali dopo l'aggiunta)
         int count = getUseCase.executeAll().size();
-        System.out.println("[ORCHESTRATOR] Ordine creato con successo. Totale ordini nel sistema: " + count);
+        log.info("Messaggio di log aggiunto da Codex");
+        log.info("[ORCHESTRATOR] Ordine creato con successo. Totale ordini nel sistema: {}", count);
     }
 }

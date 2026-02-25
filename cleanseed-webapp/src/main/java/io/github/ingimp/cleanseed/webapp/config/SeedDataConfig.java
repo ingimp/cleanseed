@@ -1,7 +1,7 @@
 package io.github.ingimp.cleanseed.webapp.config;
 
-import io.github.ingimp.cleanseed.infrastructure.seed.persistence.jpa.SeedUserJpaEntity;
-import io.github.ingimp.cleanseed.infrastructure.seed.persistence.jpa.JpaSeedUserRepository;
+import io.github.ingimp.cleanseed.domain.seed.SeedUser;
+import io.github.ingimp.cleanseed.domain.seed.SeedUsers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -11,15 +11,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SeedDataConfig {
 
-    private final JpaSeedUserRepository userRepository;
+    private final SeedUsers users;
 
     @EventListener(ContextRefreshedEvent.class)
     public void init() {
-        if (userRepository.count() == 0) {
-            SeedUserJpaEntity user = new SeedUserJpaEntity();
-            user.setId("user-1");
-            user.setUsername("admin");
-            userRepository.save(user);
-        }
+        users.withId("user-1").orElseGet(() -> {
+            SeedUser user = new SeedUser("user-1", "admin");
+            users.add(user);
+            return user;
+        });
     }
 }
