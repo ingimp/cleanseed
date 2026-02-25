@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
 @AnalyzeClasses(packages = "io.github.ingimp.cleanseed", importOptions = ImportOption.DoNotIncludeTests.class)
@@ -42,8 +43,8 @@ class ArchitectureGuardrailsTest {
 
     @ArchTest
     static final ArchRule transactional_methods_are_forbidden_outside_webapp =
-            noClasses().that().resideOutsideOfPackage("..webapp..")
-                    .should().haveMethodsAnnotatedWith(Transactional.class)
+            methods().that().areAnnotatedWith(Transactional.class)
+                    .should().beDeclaredInClassesThat().resideInAPackage("..webapp..")
                     .as("Architecture Violation: Only layer 'Webapp' may host @Transactional methods.")
                     .because("Method-level transaction boundaries must remain in webapp facade/service entry points.");
 
@@ -51,15 +52,18 @@ class ArchitectureGuardrailsTest {
     static final ArchRule transactional_webapp_classes_must_follow_facade_service_naming =
             classes().that().resideInAPackage("..webapp..")
                     .and().areAnnotatedWith(Transactional.class)
-                    .should().haveSimpleNameMatching(".*(Facade|Service|ApplicationService)$")
+                    .should().haveSimpleNameEndingWith("Facade")
+                    .orShould().haveSimpleNameEndingWith("Service")
+                    .orShould().haveSimpleNameEndingWith("ApplicationService")
                     .as("Architecture Violation: In layer 'Webapp', only Facade/Service classes may be class-level transactional.")
                     .because("Class-level @Transactional is allowed only on dedicated facade/service entry points.");
 
     @ArchTest
     static final ArchRule transactional_webapp_methods_must_follow_facade_service_naming =
-            classes().that().resideInAPackage("..webapp..")
-                    .and().haveMethodsAnnotatedWith(Transactional.class)
-                    .should().haveSimpleNameMatching(".*(Facade|Service|ApplicationService)$")
+            methods().that().areAnnotatedWith(Transactional.class)
+                    .should().beDeclaredInClassesThat().haveSimpleNameEndingWith("Facade")
+                    .orShould().beDeclaredInClassesThat().haveSimpleNameEndingWith("Service")
+                    .orShould().beDeclaredInClassesThat().haveSimpleNameEndingWith("ApplicationService")
                     .as("Architecture Violation: In layer 'Webapp', only Facade/Service classes may declare transactional methods.")
                     .because("Method-level @Transactional is allowed only on dedicated facade/service entry points.");
 }
