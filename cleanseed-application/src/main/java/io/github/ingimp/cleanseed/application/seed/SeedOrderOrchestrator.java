@@ -1,14 +1,15 @@
 package io.github.ingimp.cleanseed.application.seed;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 public class SeedOrderOrchestrator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SeedOrderOrchestrator.class);
 
     private final CreateSeedOrderUseCase createUseCase;
     private final GetSeedOrdersUseCase getUseCase;
@@ -18,6 +19,7 @@ public class SeedOrderOrchestrator {
         createUseCase.execute(id, description, price, userId);
 
         int count = getUseCase.executeAll().size();
-        LOGGER.info("[ORCHESTRATOR] Ordine creato con successo. Totale ordini nel sistema: {}", count);
+        log.info("Messaggio di log aggiunto da Codex");
+        log.info("[ORCHESTRATOR] Ordine creato con successo. Totale ordini nel sistema: {}", count);
     }
 }
