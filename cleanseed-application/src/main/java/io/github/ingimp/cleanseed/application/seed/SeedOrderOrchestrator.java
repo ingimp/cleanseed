@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -14,7 +13,6 @@ public class SeedOrderOrchestrator {
     private final CreateSeedOrderUseCase createUseCase;
     private final GetSeedOrdersUseCase getUseCase;
 
-    @Transactional
     public void createOrderWithLog(String id, String description, double price, String userId) {
         createUseCase.execute(id, description, price, userId);
 

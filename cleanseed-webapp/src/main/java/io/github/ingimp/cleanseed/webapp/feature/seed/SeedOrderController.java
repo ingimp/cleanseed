@@ -1,6 +1,5 @@
 package io.github.ingimp.cleanseed.webapp.feature.seed;
 
-import io.github.ingimp.cleanseed.application.seed.SeedOrderOrchestrator;
 import io.github.ingimp.cleanseed.application.seed.GetSeedOrdersUseCase;
 import io.github.ingimp.cleanseed.application.seed.exception.OrderNotFoundException;
 import io.github.ingimp.cleanseed.webapp.feature.seed.dto.CreateSeedOrderRequest;
@@ -15,12 +14,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SeedOrderController {
 
-    private final SeedOrderOrchestrator orchestrator;
+    private final SeedOrderFacade seedOrderFacade;
     private final GetSeedOrdersUseCase getUseCase;
 
     @PostMapping
     public void create(@RequestBody CreateSeedOrderRequest request) {
-        orchestrator.createOrderWithLog(
+        seedOrderFacade.createOrder(
                 request.id(),
                 request.description(),
                 request.price(),
