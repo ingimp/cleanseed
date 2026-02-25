@@ -1,6 +1,7 @@
 package io.github.ingimp.cleanseed.domain.seed;
 
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
     public interface SeedOrders {
@@ -8,5 +9,5 @@ import java.util.Optional;
     List<SeedOrder> all();
     Optional<SeedOrder> withId(String id);
     void remove(String id);
-    List<SeedOrder> findRecent();
+    List<SeedOrder> findAfter(LocalDateTime cutoff);
 }

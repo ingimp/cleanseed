@@ -37,8 +37,7 @@ public class InMemorySeedOrderAdapter implements SeedOrders {
     }
 
     @Override
-    public List<SeedOrder> findRecent() {
-        LocalDateTime cutoff = LocalDateTime.now().minusHours(24);
+    public List<SeedOrder> findAfter(LocalDateTime cutoff) {
         return store.values().stream()
                 .filter(o -> o.getTimestamp().isAfter(cutoff))
                 .sorted(Comparator.comparing(SeedOrder::getTimestamp).reversed())

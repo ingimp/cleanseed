@@ -2,6 +2,7 @@ package io.github.ingimp.cleanseed.webapp.feature.seed;
 
 import io.github.ingimp.cleanseed.application.seed.SeedOrderOrchestrator;
 import io.github.ingimp.cleanseed.application.seed.GetSeedOrdersUseCase;
+import io.github.ingimp.cleanseed.application.seed.exception.OrderNotFoundException;
 import io.github.ingimp.cleanseed.webapp.feature.seed.dto.CreateSeedOrderRequest;
 import io.github.ingimp.cleanseed.webapp.feature.seed.dto.SeedOrderResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,6 @@ public class SeedOrderController {
     public SeedOrderResponse byId(@PathVariable String id) {
         return getUseCase.executeWithId(id)
                 .map(SeedOrderResponse::from)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new OrderNotFoundException(id));
     }
 }

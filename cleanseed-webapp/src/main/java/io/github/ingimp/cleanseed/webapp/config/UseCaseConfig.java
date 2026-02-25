@@ -8,8 +8,15 @@ import io.github.ingimp.cleanseed.domain.seed.SeedUsers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Clock;
+
 @Configuration
 public class UseCaseConfig {
+
+    @Bean
+    public Clock systemClock() {
+        return Clock.systemDefaultZone();
+    }
 
     @Bean
     public CreateSeedOrderUseCase createSeedOrderUseCase(SeedOrders orders, SeedUsers users) {
@@ -17,8 +24,8 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public GetSeedOrdersUseCase getSeedOrdersUseCase(SeedOrders orders) {
-        return new GetSeedOrdersUseCase(orders);
+    public GetSeedOrdersUseCase getSeedOrdersUseCase(SeedOrders orders, Clock clock) {
+        return new GetSeedOrdersUseCase(orders, clock);
     }
 
     @Bean
